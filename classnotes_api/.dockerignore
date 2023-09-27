@@ -1,0 +1,5 @@
+.vscode
+.gitignore
+dot-env-template
+.coverage
+.pytest_cache/
