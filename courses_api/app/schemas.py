@@ -47,7 +47,7 @@ class Courses(CoursesBase):
         orm_mode = True
 
 class EnrollmentsBase(BaseModel):
-    user_id: int
+    user_id: str
     course_id: int
 
 class EnrollmentsCreate(EnrollmentsBase):

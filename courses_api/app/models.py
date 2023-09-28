@@ -36,5 +36,5 @@ class Enrollments(Base):
     __tablename__ = "enrollments"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, foreign_key=True, index=True)
+    user_id = Column(String, index=True)
     course_id = Column(Integer, ForeignKey("courses.id"))

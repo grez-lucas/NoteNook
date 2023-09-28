@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  users_api_app:
+    image: app-users:1.0
+    ports:
+      - 4002:4002
+  courses_api_app:
+    image: app-courses:1.0
+    ports:
+      - 4005:4005

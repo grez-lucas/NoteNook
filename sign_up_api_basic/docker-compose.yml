@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  fastapi-app:
+    container_name: users-fastapi-app
+    build: .
+    image: fast_api_base
+
+    ports:
+      - "4002:81"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 81 --reload"
+
+  db:
+    container_name: users_postgresql_db
+    image: postgres:16
+
+    ports:
+      - "5002:5002"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+
+
+volumes:
+  postgres_data:

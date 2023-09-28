@@ -1,5 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from starlette.requests import Request
+import requests
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
@@ -19,40 +21,7 @@ def get_db():
     finally:
         db.close()
 
-
-# @app.post("/users/", response_model=schemas.User)
-# def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-#     db_user = crud.get_user_by_email(db, email=user.email)
-#     if db_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-#     return crud.create_user(db=db, user=user)
-
-
-# @app.get("/users/", response_model=list[schemas.User])
-# def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     users = crud.get_users(db, skip=skip, limit=limit)
-#     return users
-
-
-# @app.get("/users/{user_id}", response_model=schemas.User)
-# def read_user(user_id: int, db: Session = Depends(get_db)):
-#     db_user = crud.get_user(db, user_id=user_id)
-#     if db_user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return db_user
-
-
-# @app.post("/users/{user_id}/items/", response_model=schemas.Item)
-# def create_item_for_user(
-#     user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-# ):
-#     return crud.create_user_item(db=db, item=item, user_id=user_id)
-
-
-# @app.get("/items/", response_model=list[schemas.Item])
-# def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     items = crud.get_items(db, skip=skip, limit=limit)
-#     return items
+# ======== COURSES ========== # 
 
 @app.post("/courses/", response_model=schemas.Courses)
 def create_courses(courses: schemas.CoursesCreate, db: Session = Depends(get_db)):
@@ -71,16 +40,32 @@ def read_course(course_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Course not found")
     return db_course
 
+# ======== ENROLLMENTS ========== # 
+
 @app.get("/enrollments/", response_model=list[schemas.Enrollments])
 def read_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     enrollments = crud.get_enrollments(db, skip=skip, limit=limit)
     return enrollments
 
 @app.post("/enrollments/", response_model=schemas.Enrollments)
-def create_enrollments(enrollments: schemas.EnrollmentsCreate, db: Session = Depends(get_db)):
-    # TODO: Check if user exists in users API
-    return crud.create_enrollments(db=db, enrollments=enrollments)
+async def create_enrollments(request: Request, enrollments: schemas.EnrollmentsCreate, db: Session = Depends(get_db)):
+    # Check if user exists in users API
+    # body = await request.json()
 
+    # Get the access token for the request
+    payload = {
+        'username': 'admin@example.com',
+        "password": '9f0c809166644d96df6c3179f077ae6075acdb3852e7d968fdeeabb5219a38ad',
+    }
+
+    user_id = 1
+    req = requests.get("http://localhost:81/users/%s" % user_id,
+                         )
+
+    print (req.json())
+
+    # return crud.create_enrollments(db=db, enrollments=enrollments)
+    return
     
 @app.get("/enrollments/{enrollment_id}", response_model=schemas.Enrollments)
 def read_enrollment(enrollment_id: int, db: Session = Depends(get_db)):
