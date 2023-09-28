@@ -63,3 +63,10 @@ def create_classnotes(classnotes: schemas.ClassnotesCreate, db: Session = Depend
 def read_classnotes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     classnotes = crud.get_classnotes(db, skip=skip, limit=limit)
     return classnotes
+
+@app.post("/classnotes/{classnote_id}", response_model=schemas.Classnotes)
+def read_classnote(classnote_id: int, db: Session = Depends(get_db)):
+    classnote = crud.get_classnote(db, classnote_id=classnote_id)
+    if classnote is None:
+        raise HTTPException(status_code=404, detail="Classnote not found")
+    return classnote
