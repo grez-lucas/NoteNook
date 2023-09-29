@@ -1,0 +1,11 @@
+# docker-compose-frontend.yaml
+
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+    ports:
+      - "3000:3000"  # Adjust the ports as needed
+ 

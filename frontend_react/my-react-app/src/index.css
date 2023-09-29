@@ -1,0 +1,15 @@
+.btn-true {
+  background-color: darkgray;
+  color: white;
+}
+
+.btn-false {
+  background-color: white;
+  color: rgb(213, 28, 28);
+}
+
+.btn-true:hover,
+.btn-false:hover {
+  background-color: gray;
+}
+
