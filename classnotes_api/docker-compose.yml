@@ -7,12 +7,12 @@ services:
     image: fast_api_base
 
     ports:
-      - "4004:81"
+      - "4004:4004"
     volumes:
       - .:/app
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 81 --reload"
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 4004 --reload"
 
   db:
     container_name: classnotes_postgresql_db

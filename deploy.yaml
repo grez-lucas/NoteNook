@@ -9,3 +9,36 @@ services:
     image: app-courses:1.0
     ports:
       - 4005:4005
+    
+  classnotes_api_app:
+    image: app-classnotes:1.0
+    ports:
+     - 4004:4004
+    volumes:
+      - .:/classnotes_app
+    depends_on:
+      - db
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 4004 --reload"
+
+  db:
+    container_name: classnotes_postgresql_db
+    image: postgres:16
+
+    ports:
+        - "5005:5005"
+    volumes:
+        - postgres_data:/var/lib/postgresql/data/pgdata
+    env_file:
+        - classnotes_api/.env
+    environment:
+        - PGDATA=/var/lib/postgresql/data/pgdata
+
+
+
+  frontend:
+    image: app-frontend:1.0
+    ports:
+    - 3000:3000
+
+volumes:
+  postgres_data:
