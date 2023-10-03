@@ -5,10 +5,21 @@ services:
     image: app-users:1.0
     ports:
       - 4002:4002
+    volumes:
+     - .:/users_app
+    depends_on:
+      - db
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 4002 --reload"
+    
   courses_api_app:
     image: app-courses:1.0
     ports:
       - 4005:4005
+    volumes:
+      - .:/courses_app
+    depends_on:
+      - db
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 4005 --reload"
     
   classnotes_api_app:
     image: app-classnotes:1.0
@@ -21,11 +32,11 @@ services:
     command: "uvicorn app.main:app --host 0.0.0.0 --port 4004 --reload"
 
   db:
-    container_name: classnotes_postgresql_db
+    container_name: postgresql_db
     image: postgres:16
 
     ports:
-        - "5005:5005"
+        - "5005:5432"
     volumes:
         - postgres_data:/var/lib/postgresql/data/pgdata
     env_file:
