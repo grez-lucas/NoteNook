@@ -7,6 +7,7 @@ services:
       - 4002:4002
     volumes:
      - .:/users_app
+    working_dir: /users_app/app
     depends_on:
       - db
     command: "uvicorn app.main:app --host 0.0.0.0 --port 4002 --reload"
@@ -15,18 +16,23 @@ services:
     image: app-courses:1.0
     ports:
       - 4005:4005
+    build: .
+    working_dir: /courses_app/app
     volumes:
-      - .:/courses_app
+      - .:/courses_app/app
+    environment:
+      DEBUG: 1
     depends_on:
       - db
     command: "uvicorn app.main:app --host 0.0.0.0 --port 4005 --reload"
     
-  classnotes_api_app:
+  classnotes_api_app:    
     image: app-classnotes:1.0
     ports:
      - 4004:4004
     volumes:
       - .:/classnotes_app
+    working_dir: /classnotes_app/app
     depends_on:
       - db
     command: "uvicorn app.main:app --host 0.0.0.0 --port 4004 --reload"
