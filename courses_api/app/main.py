@@ -50,22 +50,24 @@ def read_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 @app.post("/enrollments/", response_model=schemas.Enrollments)
 async def create_enrollments(request: Request, enrollments: schemas.EnrollmentsCreate, db: Session = Depends(get_db)):
     # Check if user exists in users API
-    # body = await request.json()
+    body = await request.json()
+    print (body)
+    user_id = body['user_id']
 
-    # Get the access token for the request
-    payload = {
-        'username': 'admin@example.com',
-        "password": '9f0c809166644d96df6c3179f077ae6075acdb3852e7d968fdeeabb5219a38ad',
-    }
-
-    user_id = 1
-    req = requests.get("http://localhost:81/users/%s" % user_id,
+    req = requests.get("http://users_api_app:4002/users/%s" % user_id,
                          )
+    
+    if req.status_code != 200:
+        return HTTPException(status_code=404, detail="User not found")
+    
+    # Check if course exists in this API
+    course_id = body['course_id']
+    if crud.get_course(db, course_id=course_id) is None:
+        raise HTTPException(status_code=404, detail="Course not found")
 
-    print (req.json())
 
-    # return crud.create_enrollments(db=db, enrollments=enrollments)
-    return
+
+    return crud.create_enrollments(db=db, enrollments=enrollments)
     
 @app.get("/enrollments/{enrollment_id}", response_model=schemas.Enrollments)
 def read_enrollment(enrollment_id: int, db: Session = Depends(get_db)):

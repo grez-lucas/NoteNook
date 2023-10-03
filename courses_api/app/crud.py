@@ -45,8 +45,8 @@ def create_courses(db: Session, courses: schemas.CoursesCreate):
 def get_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Courses).offset(skip).limit(limit).all()
 
-def get_course(db: Session, classnote_id: int):
-    return db.query(models.Courses).filter(models.Courses.id == classnote_id).first()
+def get_course(db: Session, course_id: int):
+    return db.query(models.Courses).filter(models.Courses.id == course_id).first()
 
 def create_enrollments(db: Session, enrollments: schemas.EnrollmentsCreate):
     db_enrollments = models.Enrollments(**enrollments.dict())
