@@ -1,5 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from starlette.requests import Request
+import requests
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
@@ -55,9 +57,43 @@ def get_db():
 #     return items
 
 @app.post("/classnotes/", response_model=schemas.Classnotes)
-def create_classnotes(classnotes: schemas.ClassnotesCreate, db: Session = Depends(get_db)):
-    # TODO: Check if user exists in users API
-    return crud.create_classnotes(db=db, classnotes=classnotes)
+async def create_classnotes(request: Request, classnotes: schemas.ClassnotesCreate, db: Session = Depends(get_db)):
+    # Check if user exists in users API
+    
+    body = await request.json()
+    print("This is the body: ", body)
+    user_id = body['owner_id']
+    
+    try:
+        req = requests.get("http://users_api_app:4002/users/%s" % user_id,)
+    except:
+        return HTTPException(status_code=404, detail="Error fetching user from users API")
+    
+    if req.status_code != 200:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if course exists in courses API
+
+    # course_id = body['course_id']
+
+    # try:
+    #     requests.get("http://courses_api_app:4005/courses/%s" % course_id,)
+    # except:
+    #     return HTTPException(status_code=404, detail="Course not found")
+    
+    classnote = schemas.ClassnotesCreate(title=body['title'],
+                                          score=body['score'],
+                                            description=body['description'],
+                                              downloads=body['downloads'],
+                                                owner_id=body['owner_id'],
+                                                  # course_id=body['course_id']
+                                                  )
+
+    print("This is the classnote: ", classnote)
+
+
+    
+    return crud.create_classnotes(db=db, classnotes=classnote)
 
 @app.get("/classnotes/", response_model=list[schemas.Classnotes])
 def read_classnotes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

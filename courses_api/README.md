@@ -11,4 +11,4 @@ cp dot-env-template .env
 
 ### TODO:
 
-- [ ] Somehow connect this API to the Users API, so that we can relate courses and enrollments to users.
+- [X] Somehow connect this API to the Users API, so that we can relate courses and enrollments to users.

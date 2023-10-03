@@ -25,7 +25,6 @@ def get_db():
 
 @app.post("/courses/", response_model=schemas.Courses)
 def create_courses(courses: schemas.CoursesCreate, db: Session = Depends(get_db)):
-    # TODO: Check if user exists in users API
     return crud.create_courses(db=db, courses=courses)
 
 @app.get("/courses/", response_model=list[schemas.Courses])

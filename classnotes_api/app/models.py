@@ -34,6 +34,7 @@ class Classnotes(Base):
     score = Column(Integer, index=True)
     description = Column(String, index=True)
     downloads = Column(Integer, index=True)
-    owner_id = Column(Integer, foreign_key=True, index=True)
+    owner_id = Column(Integer, index=True)
+    # course_id = Column(Integer, index=True)
 
     

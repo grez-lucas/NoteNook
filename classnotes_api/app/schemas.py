@@ -40,6 +40,7 @@ class ClassnotesBase(BaseModel):
     description: str | None = None
     downloads: int
     owner_id: int
+    # course_id: int
 
 
 class ClassnotesCreate(ClassnotesBase):
