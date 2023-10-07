@@ -4,21 +4,19 @@ import "./App.css";
 import sample1 from "./images/imagen 1.png";
 import sample2 from "./images/imagen 2.png";
 import sample3 from "./images/imagen 3.png";
-//import UsersView from "./UsersView"
+import UserView from "./UserView"
+import MainView from "./MainView";
 //import GroupView from "./Groups/GroupView"
 //import VisualizerView from "./visualizerView"
 //import AssignmentView from "./Assignments/assignmentView";
 //import EvaluationView from "./Evaluation/evaluationView";
 
 function App() {
-  const [user, setUser] = useState({
-    is_Admin: true, // Replace with the actual user object or state value pls
-    is_visualizer: true,
-    is_Evaluator: true,
-  });
+
   const [menuState, setMenuState] = useState(0);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
 
   const handleLogin = () => {
     // Simulate a login action (you should replace this with your actual login logic)
@@ -32,10 +30,15 @@ function App() {
 
   return (
     <div>
-        <NavBar setMenuState={setMenuState} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+        <NavBar setMenuState={setMenuState}/>
+        {menuState === 0 && (
+        <>
+            <MainView />
+        </>
+        )}
         {menuState === 1 && (
         <>
-            {/* <UsersView /> */}
+            <UserView />
         </>
         )}
         {menuState === 2 && (
@@ -62,75 +65,7 @@ function App() {
             {/* <EvaluationView /> */}
         </>
         )}
-
-<div className="uploads-container">
-  <h1>Last Upload files: </h1>
-  <div className="items-container">
-    <div className="upload-item">
-      <img src={sample1} alt="Document 1" />
-      <p>Document 1</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample2} alt="Document 2" />
-      <p>Document 2</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample3} alt="Document 3" />
-      <p>Document 3</p>
-    </div>
-    <div className="upload-item more">
-      <span className="more-icon">...</span>
-      <p>More</p>
-    </div>
-  </div>
-</div>
-
-<div className="uploads-container">
-  <h1>more popular: </h1>
-  <div className="items-container">
-    <div className="upload-item">
-      <img src={sample1} alt="Document 1" />
-      <p>Document 1</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample2} alt="Document 2" />
-      <p>Document 2</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample3} alt="Document 3" />
-      <p>Document 3</p>
-    </div>
-    <div className="upload-item more">
-      <span className="more-icon">...</span>
-      <p>More</p>
-    </div>
-  </div>
-</div>
-
-<div className="uploads-container">
-  <h1>my favourites: </h1>
-  <div className="items-container">
-    <div className="upload-item">
-      <img src={sample1} alt="Document 1" />
-      <p>Document 1</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample2} alt="Document 2" />
-      <p>Document 2</p>
-    </div>
-    <div className="upload-item">
-      <img src={sample3} alt="Document 3" />
-      <p>Document 3</p>
-    </div>
-    <div className="upload-item more">
-      <span className="more-icon">...</span>
-      <p>More</p>
-    </div>
-  </div>
-</div>
-
-
-      
+   
   </div>
 
   

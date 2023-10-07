@@ -1,0 +1,22 @@
+/* UserView.css */
+.user-info-box {
+    background-color: #f0f0f0; /* Gray background color */
+    padding: 20px; /* Add padding as needed */
+    border: 1px solid #ccc; /* Add a border if desired */
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-image img {
+    width: 100px; /* Adjust the image size as needed */
+    height: 100px; /* Adjust the image size as needed */
+    border-radius: 50%; /* Make the image circular if desired */
+    margin-right: 20px; /* Add spacing between image and user details */
+  }
+  
+  .favorite-pdfs {
+    margin-top: 20px; /* Add spacing between user info and favorite PDFs */
+  }
+  
+  /* Add more CSS styles as needed to customize the appearance */
+  

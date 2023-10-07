@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import logo from './images/nooto white 1.png';
 import "./Navbar.css"
 
-export default function NavBar({ setMenuState, isLoggedIn, handleLogout }) {
+export default function NavBar({ setMenuState }) {
+
+  const handleMenuClick = (menuNumber) => {
+    console.log("Clicked on menu item:", menuNumber);
+    setMenuState(menuNumber);
+  };
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-light">
         <a className="navbar-brand" href="/">
@@ -25,7 +31,7 @@ export default function NavBar({ setMenuState, isLoggedIn, handleLogout }) {
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
         <ul className="navbar-nav mr-auto">
           <li className="nav-item active">
-            <a className="nav-link text-white 10px" onClick={() => setMenuState(1)}>
+            <a className="nav-link text-white 10px" onClick={() => handleMenuClick(1)}>
               User
             </a>
           </li>
@@ -57,16 +63,6 @@ export default function NavBar({ setMenuState, isLoggedIn, handleLogout }) {
         
         <div>
             
-          {isLoggedIn ? (
-            <button className="btn btn-primary" onClick={handleLogout}>
-              Log Out
-            </button>
-          ) : (
-            <>
-              <button className="btn btn-success">Sign Up</button>
-              <button className="btn btn-primary">Log In</button>
-            </>
-          )}
         </div>
       </div>
     </nav>
