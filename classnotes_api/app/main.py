@@ -1,15 +1,21 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response
 from sqlalchemy.orm import Session
-from starlette.requests import Request
 import requests
-
-from . import crud, models, schemas
 from .database import SessionLocal, engine
+from typing import Annotated
+from . import schemas, models
+import boto3
+
+app = FastAPI(title="CLASSNOTES API", openapi_url=f"/openapi.json")
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="CLASSNOTES API", openapi_url=f"/openapi.json"
+
+ACCESS_KEY = "AKIAYQZN2A7XHQ57Q4FT"
+SECRET_KEY = "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"
+BUCKET_NAME = "classnotesfiles"
+s3_client = boto3.client(
+    "s3", aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY
 )
 
 
@@ -22,56 +28,30 @@ def get_db():
         db.close()
 
 
-# @app.post("/users/", response_model=schemas.User)
-# def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-#     db_user = crud.get_user_by_email(db, email=user.email)
-#     if db_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-#     return crud.create_user(db=db, user=user)
+db_dependency = Annotated[Session, Depends(get_db)]
 
 
-# @app.get("/users/", response_model=list[schemas.User])
-# def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     users = crud.get_users(db, skip=skip, limit=limit)
-#     return users
-
-
-# @app.get("/users/{user_id}", response_model=schemas.User)
-# def read_user(user_id: int, db: Session = Depends(get_db)):
-#     db_user = crud.get_user(db, user_id=user_id)
-#     if db_user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return db_user
-
-
-# @app.post("/users/{user_id}/items/", response_model=schemas.Item)
-# def create_item_for_user(
-#     user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-# ):
-#     return crud.create_user_item(db=db, item=item, user_id=user_id)
-
-
-# @app.get("/items/", response_model=list[schemas.Item])
-# def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     items = crud.get_items(db, skip=skip, limit=limit)
-#     return items
-
-@app.post("/classnotes/", response_model=schemas.Classnotes)
-async def create_classnotes(request: Request, classnotes: schemas.ClassnotesCreate, db: Session = Depends(get_db)):
+@app.post("/classnotes/")
+async def create_classnotes(
+    classnote: schemas.ClassnotesBase,
+    db: db_dependency,
+):
     # Check if user exists in users API
-    
-    body = await request.json()
-    print("This is the body: ", body)
-    user_id = body['owner_id']
-    
-    try:
-        req = requests.get("http://users_api_app:4002/users/%s" % user_id,)
-    except:
-        return HTTPException(status_code=404, detail="Error fetching user from users API")
-    
-    if req.status_code != 200:
-        raise HTTPException(status_code=404, detail="User not found")
-    
+    print(classnote)
+
+    owner_id = classnote.owner_id
+
+    print("owner_id: ", owner_id)
+    # try:
+    #     req = requests.get(f"http://users_api_app:4002/users/{owner_id}")
+    # except:
+    #     return HTTPException(
+    #         status_code=404, detail="Error fetching user from users API"
+    #     )
+
+    # if req.status_code != 200:
+    #     raise HTTPException(status_code=404, detail="User not found")
+
     # Check if course exists in courses API
 
     # course_id = body['course_id']
@@ -80,29 +60,58 @@ async def create_classnotes(request: Request, classnotes: schemas.ClassnotesCrea
     #     requests.get("http://courses_api_app:4005/courses/%s" % course_id,)
     # except:
     #     return HTTPException(status_code=404, detail="Course not found")
-    
-    classnote = schemas.ClassnotesCreate(title=body['title'],
-                                          score=body['score'],
-                                            description=body['description'],
-                                              downloads=body['downloads'],
-                                                owner_id=body['owner_id'],
-                                                  # course_id=body['course_id']
-                                                  )
 
-    print("This is the classnote: ", classnote)
+    db_classnote = models.Classnotes(
+        title=classnote.title,
+        score=classnote.score,
+        description=classnote.description,
+        downloads=classnote.downloads,
+        owner_id=classnote.owner_id,
+    )
+
+    # Uploading to DB
+    db.add(db_classnote)
+    db.commit()
+    db.refresh(db_classnote)
+
+    return {"classnote_id": db_classnote.id}
 
 
-    
-    return crud.create_classnotes(db=db, classnotes=classnote)
+@app.post("/classnotes/{classnote_id}/files")
+async def upload_file_to_classnote(classnote_id, file_upload: UploadFile):
+    data = await file_upload.read()
+    s3_client.put_object(Key=file_upload.filename, Body=data, Bucket=BUCKET_NAME)
+    return {"filename": file_upload.filename}
 
-@app.get("/classnotes/", response_model=list[schemas.Classnotes])
-def read_classnotes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    classnotes = crud.get_classnotes(db, skip=skip, limit=limit)
+
+@app.get("/classnotes/{classnote_id}/files/{file_key}")
+async def download_file_from_classnote(classnote_id, file_key):
+    try:
+        res = s3_client.get_object(Bucket=BUCKET_NAME, Key=file_key)
+        data = res["Body"].read()
+    except:
+        return {"info": f"Error getting {file_key} from S3."}
+
+    return Response(
+        content=data,
+        headers={
+            "Content-Disposition": f"inline;filename={file_key}",
+            "Content-Type": "application/octet-stream",
+        },
+    )
+
+
+@app.get("/classnotes/", response_model=list[schemas.ClassnotesBase])
+def read_classnotes(db: db_dependency):
+    classnotes = db.query(models.Classnotes).all()
     return classnotes
 
-@app.post("/classnotes/{classnote_id}", response_model=schemas.Classnotes)
-def read_classnote(classnote_id: int, db: Session = Depends(get_db)):
-    classnote = crud.get_classnote(db, classnote_id=classnote_id)
+
+@app.get("/classnotes/{classnote_id}", response_model=schemas.ClassnotesBase)
+def read_classnote(classnote_id: int, db: db_dependency):
+    classnote = (
+        db.query(models.Classnotes).filter(models.Classnotes.id == classnote_id).first()
+    )
     if classnote is None:
         raise HTTPException(status_code=404, detail="Classnote not found")
     return classnote
