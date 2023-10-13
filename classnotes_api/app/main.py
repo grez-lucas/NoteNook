@@ -1,10 +1,11 @@
-from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response, status
 from sqlalchemy.orm import Session
 import requests
 from .database import SessionLocal, engine
 from typing import Annotated
 from . import schemas, models
 import boto3
+import magic
 
 app = FastAPI(title="CLASSNOTES API", openapi_url=f"/openapi.json")
 
@@ -77,15 +78,61 @@ async def create_classnotes(
     return {"classnote_id": db_classnote.id}
 
 
+KB = 1024
+MB = 1024 * KB
+
+SUPPORTED_FILE_TYPES = {
+    "image/png": "png",
+    "image/jpeg": "jpg",
+    "application/pdf": "pdf",
+    "application/msword": "doc",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+    "application/zip": "zip",
+}
+
+
 @app.post("/classnotes/{classnote_id}/files")
-async def upload_file_to_classnote(classnote_id, file_upload: UploadFile):
+async def upload_file_to_classnote(
+    classnote_id, file_upload: UploadFile, db: db_dependency
+):
     data = await file_upload.read()
-    s3_client.put_object(Key=file_upload.filename, Body=data, Bucket=BUCKET_NAME)
-    return {"filename": file_upload.filename}
+    size = len(data)
+
+    # Check file size
+    max_size_mb = 1
+    if not 0 < size <= max_size_mb * MB:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Supported file size < 1MB"
+        )
+
+    # This helps security detecting true filetype
+    file_type = magic.from_buffer(buffer=data, mime=True)
+    if file_type not in SUPPORTED_FILE_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file type {file_type}, supported types are {SUPPORTED_FILE_TYPES}",
+        )
+    detected_file_ext = SUPPORTED_FILE_TYPES[file_type]
+
+    # Creation of bucketfile in Postgresql
+    db_file = models.BucketFile(
+        file_name=file_upload.filename,
+        file_ext=detected_file_ext,
+        classnote_id=classnote_id,
+    )
+    db.add(db_file)
+    db.commit()
+    db.refresh(db_file)
+
+    # Submitting file to S3 bucket
+    s3_key = f"{db_file.id}.{db_file.file_ext}"
+    s3_client.put_object(Key=s3_key, Body=data, Bucket=BUCKET_NAME)
+
+    return {"key": s3_key}
 
 
-@app.get("/classnotes/{classnote_id}/files/{file_key}")
-async def download_file_from_classnote(classnote_id, file_key):
+@app.get("/classnotes/files/{file_key}")
+async def download_file_from_classnote(file_key):
     try:
         res = s3_client.get_object(Bucket=BUCKET_NAME, Key=file_key)
         data = res["Body"].read()
@@ -99,6 +146,27 @@ async def download_file_from_classnote(classnote_id, file_key):
             "Content-Type": "application/octet-stream",
         },
     )
+
+
+@app.get("/classnotes/{classnote_id}/files")
+async def get_files_from_classnote(classnote_id, db: db_dependency):
+    classnote = (
+        db.query(models.Classnotes).filter(models.Classnotes.id == classnote_id).first()
+    )
+
+    if not classnote:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Not found classnote {classnote_id}.",
+        )
+
+    files_return = []
+    for f in classnote.files:
+        files_return.append(
+            {"id": f.id, "file_name": f.file_name, "file_ext": f.file_ext}
+        )
+
+    return {"files": files_return}
 
 
 @app.get("/classnotes/", response_model=list[schemas.ClassnotesBase])

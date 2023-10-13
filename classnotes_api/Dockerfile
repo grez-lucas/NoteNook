@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # First copy only requirements.txt to cache dependencies independently
 COPY requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
-
+RUN apt-get update && apt-get install -y libmagic-dev
 COPY . /app
 
 EXPOSE 4004
