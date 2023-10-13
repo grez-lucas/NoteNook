@@ -6,6 +6,7 @@ import sample2 from "./images/imagen 2.png";
 import sample3 from "./images/imagen 3.png";
 import UserView from "./UserView"
 import MainView from "./MainView";
+import CoursesView from "./CoursesView";
 //import GroupView from "./Groups/GroupView"
 //import VisualizerView from "./visualizerView"
 //import AssignmentView from "./Assignments/assignmentView";
@@ -45,6 +46,7 @@ function App() {
         <>
             {/* puede crear grupos, pruebas y evaluaciones. */}
             {/* <VisualizerView /> */}
+            <CoursesView />
         </>
         )}
         {menuState === 3 && (

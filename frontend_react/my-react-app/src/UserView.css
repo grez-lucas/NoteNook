@@ -1,22 +1,89 @@
 /* UserView.css */
-.user-info-box {
-    background-color: #f0f0f0; /* Gray background color */
-    padding: 20px; /* Add padding as needed */
-    border: 1px solid #ccc; /* Add a border if desired */
+/* .user-info-box {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 1px solid #ccc;
     display: flex;
     align-items: center;
   }
   
   .user-image img {
-    width: 100px; /* Adjust the image size as needed */
-    height: 100px; /* Adjust the image size as needed */
-    border-radius: 50%; /* Make the image circular if desired */
-    margin-right: 20px; /* Add spacing between image and user details */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
   }
   
   .favorite-pdfs {
-    margin-top: 20px; /* Add spacing between user info and favorite PDFs */
-  }
+    margin-top: 20px;
+  } */
   
   /* Add more CSS styles as needed to customize the appearance */
-  
+
+  /* UserView.css */
+
+/* Contenedor principal de información de usuario */
+.user-info-box {
+  background-color: #f2f2f0; /* Color de fondo */
+  border: 1px solid #b9b5c3; /* Borde ligero */
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* Imagen de usuario */
+.user-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 20px;
+  object-fit: cover; /* Ajusta la imagen para que encaje en el círculo */
+}
+
+/* Detalles del usuario */
+.user-details {
+  flex: 1; /* Ocupa el espacio restante en el contenedor */
+}
+
+.user-details h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.user-details p {
+  color: #57546f; /* Color de texto más oscuro */
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+/* Favoritos PDFs */
+.favorite-pdfs {
+  margin-top: 20px;
+}
+
+.favorite-pdfs h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.favorite-pdfs ul {
+  list-style: none; /* Quita las viñetas de la lista */
+  padding: 0;
+}
+
+.favorite-pdfs li {
+  margin-bottom: 10px;
+}
+
+.favorite-pdfs a {
+  color: #425bbd; /* Color de enlace azul */
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s; /* Transición suave del color del enlace */
+}
+
+.favorite-pdfs a:hover {
+  color: #454194; /* Color del enlace al pasar el mouse */
+}
+
+/* Añadir más estilos personalizados según sea necesario */

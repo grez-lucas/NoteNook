@@ -1,0 +1,56 @@
+/* CoursesView.css */
+
+.courses-view {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .subject-item {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #f2f2f0;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .subject-details {
+    flex: 2;
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin: 0;
+    color: #23213d; /* Color de título */
+  }
+  
+  p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #76747d; /* Color de subtítulo */
+  }
+  
+  .notes-count {
+    flex: 1;
+    text-align: right;
+    font-size: 16px;
+    color: #425bbd; /* Color de cantidad de apuntes */
+  }
+  
+  /* Estilo de enlace para hacer clic en la asignatura */
+  .subject-item:hover {
+    background-color: #f2f2f0; /* Color de fondo al pasar el mouse */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  

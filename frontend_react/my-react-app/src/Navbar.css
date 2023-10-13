@@ -1,6 +1,62 @@
-.logo {
+/* .logo {
 
     width: 268px;
     height: 84px;
 
-}
+} */
+
+/* NavBar.css */
+
+/* Estilos para el logotipo */
+.logo {
+    width: 268px; /* Ajusta el ancho según tus necesidades */
+    height: auto; /* Esto mantiene la proporción original */
+  }
+  
+  /* Estilos para el botón "Search" en la barra de búsqueda */
+  .form-control {
+    border: 1px solid #b9b5c3; /* Borde del input */
+    border-radius: 5px; /* Bordes redondeados */
+  }
+  
+  .btn-outline-success {
+    background-color: #82aa28; /* Color de fondo */
+    color: #fff; /* Color de texto */
+    border: none; /* Sin borde */
+  }
+  
+  .btn-outline-success:hover {
+    background-color: #82aa28; /* Color de fondo al pasar el mouse */
+  }
+  
+  /* Estilos para los elementos de navegación */
+  .navbar {
+    background-color: #23213d; /* Color de fondo de la barra de navegación */
+    color: #f2f2f0; /* Color de texto en la barra de navegación */
+  }
+  
+  .nav-link {
+    color: #f2f2f0; /* Color de texto de los enlaces de navegación */
+    cursor: pointer; /* Cursor de tipo mano al pasar el mouse */
+  }
+  
+  .navbar-toggler-icon {
+    background-color: #f2f2f0; /* Color del icono del botón desplegable */
+  }
+  
+  /* Estilos para los elementos de navegación activos */
+  .nav-item.active a {
+    font-weight: bold; /* Texto en negrita para elementos activos */
+  }
+  
+  /* Alineación del logotipo en la barra de navegación */
+  .navbar-brand {
+    display: flex; /* Elemento flexible para centrar contenido */
+    align-items: center; /* Centra el contenido verticalmente */
+  }
+  
+  /* Espaciado entre elementos de navegación */
+  .navbar-nav {
+    margin-right: 20px; /* Espaciado entre elementos de navegación y la barra de búsqueda */
+  }
+  
