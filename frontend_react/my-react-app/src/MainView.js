@@ -94,7 +94,6 @@ const noteData = [
 const NoteItem = ({ image, alt, text, href }) => (
   <a 
   href={href} className="upload-item"
-  onClick = {console.log(getNotes())}
   >
     <img src={image} alt={alt} />
     <p>{text}</p>
@@ -124,6 +123,7 @@ const MainView = () => (
             />
           ))}
           <MoreItem />
+          <button type="button" onClick={getNotes}>Get Notes</button>
         </div>
       </div>
     ))}

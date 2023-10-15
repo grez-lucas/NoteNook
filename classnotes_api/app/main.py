@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import requests
 from .database import SessionLocal, engine
@@ -8,6 +9,20 @@ import boto3
 import magic
 
 app = FastAPI(title="CLASSNOTES API", openapi_url=f"/openapi.json")
+
+origins = [
+    "http://localhost",
+    "http://frontend:3000",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 models.Base.metadata.create_all(bind=engine)
 

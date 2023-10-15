@@ -1,5 +1,7 @@
+import configData from "./config.json"
+
 export async function getNotes() {
-  return fetch("http://classnotes_api_app:4004/classnotes", {
+  return fetch(`${configData.CLASSNOTES_URL}/classnotes/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +16,7 @@ export async function getNotes() {
 }
 
 export async function getNoteById(id) {
-  return fetch("http://classnotes_api_app:4004/classnotes/" + id, {
+  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -29,7 +31,7 @@ export async function getNoteById(id) {
 }
 
 export async function getNoteFiles(id) {
-  return fetch("http://classnotes_api_app:4004/classnotes/" + id + "/files", {
+  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id + "/files", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +49,7 @@ export async function uploadNoteFile(id, file) {
 
   try {
     const response = await fetch(
-      "http://classnotes_api_app:4004/classnotes/" + id + "/files",
+      `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files",
       {
         method: "POST",
         body: formData,
@@ -69,7 +71,7 @@ export async function uploadNoteFile(id, file) {
 
 export async function downloadNotefile(id, fileKey) {
     return fetch(
-        "http://classnotes_api_app:4004/classnotes/" + id + "/files/" + fileKey,
+        `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/" + fileKey,
         {
         method: "GET",
         }
