@@ -83,6 +83,7 @@ import "./MainView.css";  // Agregar tu archivo de estilos aquí
 import sample1 from "./images/imagen 1.png";
 import sample2 from "./images/imagen 2.png";
 import sample3 from "./images/imagen 3.png";
+import { getNotes } from "./services/ClassnoteService";
 
 const noteData = [
   { id: 1, image: sample1, alt: "Document 1", text: "Document 1", href: "/link-to-document1" },
@@ -91,7 +92,10 @@ const noteData = [
 ];
 
 const NoteItem = ({ image, alt, text, href }) => (
-  <a href={href} className="upload-item">
+  <a 
+  href={href} className="upload-item"
+  onClick = {console.log(getNotes())}
+  >
     <img src={image} alt={alt} />
     <p>{text}</p>
   </a>

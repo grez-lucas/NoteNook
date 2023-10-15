@@ -34,7 +34,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.post("/classnotes/")
 async def create_classnotes(
-    classnote: schemas.ClassnotesBase,
+    classnote: schemas.ClassnotesCreate,
     db: db_dependency,
 ):
     # Check if user exists in users API
@@ -175,7 +175,7 @@ def read_classnotes(db: db_dependency):
     return classnotes
 
 
-@app.get("/classnotes/{classnote_id}", response_model=schemas.ClassnotesBase)
+@app.get("/classnotes/{classnote_id}", response_model=schemas.ClassnotesRead)
 def read_classnote(classnote_id: int, db: db_dependency):
     classnote = (
         db.query(models.Classnotes).filter(models.Classnotes.id == classnote_id).first()
