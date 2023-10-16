@@ -178,7 +178,6 @@ useEffect(() => {
             />
           ))}
           <MoreItem />
-          <button type="button" onClick={handleGetNoteFiles}>Get Notes</button>
         </div>
       </div>
     ))
