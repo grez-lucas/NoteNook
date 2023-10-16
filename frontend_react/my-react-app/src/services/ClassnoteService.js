@@ -49,7 +49,7 @@ export async function uploadNoteFile(id, file) {
 
   try {
     const response = await fetch(
-      `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files",
+      `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/",
       {
         method: "POST",
         body: formData,
