@@ -16,7 +16,7 @@ export async function getNotes() {
 }
 
 export async function getNoteById(id) {
-  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id, {
+  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id + '/', {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function getNoteById(id) {
 }
 
 export async function getNoteFiles(id) {
-  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id + "/files", {
+  return fetch(`${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

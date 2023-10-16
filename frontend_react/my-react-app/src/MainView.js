@@ -112,9 +112,13 @@ const handleGetNoteFiles = () => {
 }
 
 
-const NoteItem = ({ image, alt, text, href }) => (
+const NoteItem = ({ id, image, alt, text, href, setMenuState }) => (
   <a 
   href={href} className="upload-item"
+  onClick={() => {
+    console.log("Clicked ID:", id, typeof id);  // This line will log the clicked ID and its type
+    setMenuState(id);
+    }}
   >
     <img src={image} alt={alt} />
     <p>{text}</p>
@@ -128,7 +132,7 @@ const MoreItem = () => (
   </a>
 );
 
-const MainView = () => {
+const MainView = ({setMenuState}) => {
 
 const [isLoading, setIsLoading ] = useState(true);
 
@@ -147,7 +151,6 @@ useEffect(() => {
       image: sample1,
       alt: `Document ${note.id}`,
       text: note.title,
-      href: `/link-to-document${note.id}`,
     }));
     setNoteData(parsedNoteData.slice(0, 3)); // Only the first three notes for now
     setIsLoading(false);
@@ -171,10 +174,11 @@ useEffect(() => {
           {noteData.map((note) => (
             <NoteItem
               key={note.id}
+              id={note.id}
               image={note.image}
               alt={note.alt}
               text={note.text}
-              href={note.href}
+              setMenuState={setMenuState}
             />
           ))}
           <MoreItem />

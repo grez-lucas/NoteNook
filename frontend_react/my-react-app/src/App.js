@@ -7,6 +7,7 @@ import sample3 from "./images/imagen 3.png";
 import UserView from "./UserView"
 import MainView from "./MainView";
 import CoursesView from "./CoursesView";
+import NoteView from "./NoteView";
 //import GroupView from "./Groups/GroupView"
 //import VisualizerView from "./visualizerView"
 //import AssignmentView from "./Assignments/assignmentView";
@@ -15,9 +16,16 @@ import CoursesView from "./CoursesView";
 function App() {
 
   const [menuState, setMenuState] = useState(0);
+  const [classnoteId, setClassnoteId] = useState(null);
 
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
+  const handleClassnoteClick = (id) => {
+    console.log("Received ID: ", id, typeof(id));
+    setClassnoteId(id);
+    setMenuState(6);
+  }
 
   const handleLogin = () => {
     // Simulate a login action (you should replace this with your actual login logic)
@@ -34,7 +42,9 @@ function App() {
         <NavBar setMenuState={setMenuState}/>
         {menuState === 0 && (
         <>
-            <MainView />
+            <MainView 
+              setMenuState={handleClassnoteClick}
+            />
         </>
         )}
         {menuState === 1 && (
@@ -67,6 +77,12 @@ function App() {
             {/* <EvaluationView /> */}
         </>
         )}
+        {menuState === 6 && (
+          <NoteView
+            id={classnoteId}
+          />
+          )
+          }
    
   </div>
 
