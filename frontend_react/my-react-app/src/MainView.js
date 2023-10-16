@@ -79,17 +79,38 @@
 
 
 import React from "react";
+import { useState, useEffect } from "react";
 import "./MainView.css";  // Agregar tu archivo de estilos aquí
 import sample1 from "./images/imagen 1.png";
 import sample2 from "./images/imagen 2.png";
 import sample3 from "./images/imagen 3.png";
-import { getNotes } from "./services/ClassnoteService";
+import { getNotes, getNoteFiles } from "./services/ClassnoteService";
+import LoadingSpinner from "./utils/LoadingSpinner"
 
-const noteData = [
-  { id: 1, image: sample1, alt: "Document 1", text: "Document 1", href: "/link-to-document1" },
-  { id: 2, image: sample2, alt: "Document 2", text: "Document 2", href: "/link-to-document2" },
-  { id: 3, image: sample3, alt: "Document 3", text: "Document 3", href: "/link-to-document3" },
-];
+
+
+const handleGetNotes = () => {
+  getNotes()
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const handleGetNoteFiles = () => {
+  getNoteFiles(1)
+  .then(response => {
+    console.log(response);
+  }
+  )
+  .catch(error => {
+    console.log(error);
+  }
+  )
+}
+
 
 const NoteItem = ({ image, alt, text, href }) => (
   <a 
@@ -107,9 +128,43 @@ const MoreItem = () => (
   </a>
 );
 
-const MainView = () => (
+const MainView = () => {
+
+const [isLoading, setIsLoading ] = useState(true);
+
+const [noteData, setNoteData] = useState([
+  { id: 1, image: sample1, alt: "Document 1", text: "Document 1", href: "/link-to-document1" },
+  { id: 2, image: sample2, alt: "Document 2", text: "Document 2", href: "/link-to-document2" },
+  { id: 3, image: sample3, alt: "Document 3", text: "Document 3", href: "/link-to-document3" },
+]);
+
+useEffect(() => {
+  getNotes()
+  .then(response => {
+    console.log(response);
+    const parsedNoteData = response.map((note) => ({
+      id: note.id,
+      image: sample1,
+      alt: `Document ${note.id}`,
+      text: note.title,
+      href: `/link-to-document${note.id}`,
+    }));
+    setNoteData(parsedNoteData.slice(0, 3)); // Only the first three notes for now
+    setIsLoading(false);
+  })
+  .catch(error => {
+    console.log(error);
+    setIsLoading(false);
+  })
+}
+, []);
+  
+ return (
+
+
   <>
-    {["Last Uploaded", "Popular", "My Favourite"].map((category) => (
+  { isLoading ? (<LoadingSpinner />) : (
+    ["Last Uploaded", "Popular", "My Favourite"].map((category) => (
       <div className="uploads-container" key={category}>
         <h1>{category} Notes: </h1>
         <div className="items-container">
@@ -123,11 +178,13 @@ const MainView = () => (
             />
           ))}
           <MoreItem />
-          <button type="button" onClick={getNotes}>Get Notes</button>
+          <button type="button" onClick={handleGetNoteFiles}>Get Notes</button>
         </div>
       </div>
-    ))}
+    ))
+  )} 
+    
   </>
-);
+)};
 
 export default MainView;
