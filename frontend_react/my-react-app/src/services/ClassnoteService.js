@@ -71,7 +71,7 @@ export async function uploadNoteFile(id, file) {
 
 export async function downloadNotefile(id, fileKey) {
     return fetch(
-        `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/" + fileKey,
+        `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/" + fileKey + "/",
         {
         method: "GET",
         }

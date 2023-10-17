@@ -75,7 +75,10 @@ export default function NoteView({ id }) {
               <ul>
                 {files.map((file) => (
                   <li key={file.id}>
-                    <a href={downloadNotefile(id, file.id)}>{file.name}</a>
+                    <a 
+                    href={(downloadNotefile(id, `${file.id}.${file.file_ext}`))}
+                    download={file.file_name}
+                    >{file.file_name}</a>
                   </li>
                 ))}
               </ul>
