@@ -2,9 +2,9 @@ from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response, statu
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import requests
-from .database import SessionLocal, engine
+from database import SessionLocal, engine
 from typing import Annotated
-from . import schemas, models
+import schemas, models
 import boto3
 import magic
 

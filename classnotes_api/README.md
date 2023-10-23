@@ -9,6 +9,6 @@ cp dot-env-template .env
 2. Run `sudo docker compose up --build` to build the containers and start the server.
 3. Go to the browser and navigate to `localhost:4004/docs` to see the API documentation.
 
-### TODO:
+# If you only want to build the image
 
-- [X] Somehow connect this API to the Users API, so that we can relate Classnotes to users.
+`sudo docker build -t classnotes_api:latest .`

@@ -56,6 +56,11 @@ services:
     image: app-frontend:1.0
     ports:
     - 3000:3000
+    volumes:
+      - .:/frontend_react:delegated
+      - /node_modules
+    environment:
+      - WATCHPACK_POLLING=true
 
 volumes:
   postgres_data:

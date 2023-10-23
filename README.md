@@ -20,3 +20,27 @@ chmod +x build.sh
 ```
 sudo docker compose -f deploy.yaml up
 ```
+
+
+# Kubernetes setup
+
+To run the app on Kubernetes, you must have minikube installed on your machine. If you do not have minikube installed, please follow the instructions here: https://minikube.sigs.k8s.io/docs/start/
+
+Once you have minikube installed, you can run the app by running the following command in the root directory of the project:
+
+```
+cd k8s
+chmod +x build.sh
+```
+Then find the IP address of the minikube cluster by running the following command:
+```
+minikube ip
+```
+Then, in the k8s directory, run the following command:
+```
+
+To get the port number of each service, run the following command:
+```
+minikube kubectl -- get svc 
+```
+Then, you can access the app by going to the IP address of the minikube cluster and the port number of the service you want to access.

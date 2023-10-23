@@ -5,14 +5,15 @@ services:
     container_name: classnotes-fastapi-app
     build: .
     image: fast_api_base
-
+    env_file:
+      - .env
     ports:
       - "4004:4004"
     volumes:
-      - .:/app
+      - ./app:/app
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 4004 --reload"
+    command: "uvicorn main:app --host 0.0.0.0 --port 4004 --reload"
 
   db:
     container_name: classnotes_postgresql_db
