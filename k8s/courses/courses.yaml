@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: courses-deployment
+  labels:
+    app: courses
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: courses
+  template:
+    metadata:
+      labels:
+        app: courses
+    spec:
+      containers:
+      - name: courses
+        image: lgrez/courses_api:v1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4005
+          name: fastapi-courses
+        readinessProbe:
+          httpGet:
+            port: 4005
+            path: /docs
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            port: 4005
+            path: /docs
+          initialDelaySeconds: 15
+          periodSeconds: 15
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+
+
+        env:
+        - name: PYTHONPATH
+          value: "/app"
+        - name: SERVER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: SERVER_NAME
+        - name: SERVER_HOST
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: SERVER_HOST
+        - name: PROJECT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: PROJECT_NAME
+        - name: FIRST_SUPERUSER
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: FIRST_SUPERUSER
+        - name: FIRST_SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: FIRST_SUPERUSER_PASSWORD
+        - name: USERS_OPEN_REGISTRATION
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: USERS_OPEN_REGISTRATION
+        - name: BACKEND_CORS_ORIGINS
+          valueFrom:
+            secretKeyRef:
+              name: courses-secret
+              key: BACKEND_CORS_ORIGINS
+
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_SERVER
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_DB
+        - name: PGADMIN_DEFAULT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: PGADMIN_DEFAULT_EMAIL
+        - name: PGADMIN_DEFAULT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: PGADMIN_DEFAULT_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses-service
+spec:
+  type: NodePort
+  selector:
+    app: courses
+  ports:
+    - port: 4005
+      targetPort: 4005
+      nodePort: 30405
