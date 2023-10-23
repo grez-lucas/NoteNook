@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 import requests
 
-from . import crud, models, schemas
-from .database import SessionLocal, engine
+import crud, models, schemas
+from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 

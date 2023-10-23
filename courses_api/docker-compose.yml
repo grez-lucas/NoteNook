@@ -5,14 +5,15 @@ services:
     container_name: courses-fastapi-app
     build: .
     image: fast_api_base
-
+    env_file:
+      - .env
     ports:
       - "4005:4005"
     volumes:
-      - .:/app
+      - ./app:/app
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 4005 --reload"
+    command: "uvicorn main:app --host 0.0.0.0 --port 4005 --reload"
 
   db:
     container_name: courses_postgresql_db
