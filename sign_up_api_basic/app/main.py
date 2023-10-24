@@ -12,10 +12,16 @@ app = FastAPI(
     title="USERS API", openapi_url=f"/openapi.json"
 )
 
+origins = [
+    "http://localhost",
+    "http://frontend:3000",
+    "http://localhost:3000",
+    "http://192.168.49.2:30100"
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:3000', 'http://localhost:4002', 'http://localhost', 'localhost'],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

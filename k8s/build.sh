@@ -13,3 +13,5 @@ minikube kubectl -- apply -f users/users.yaml
 
 minikube kubectl -- apply -f courses/courses-secret.yaml
 minikube kubectl -- apply -f courses/courses.yaml
+
+minikube kubectl -- apply -f frontend/frontend.yaml

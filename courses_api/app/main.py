@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 import requests
 
@@ -12,6 +13,20 @@ app = FastAPI(
     title="COURSES API", openapi_url=f"/openapi.json"
 )
 
+origins = [
+    "http://localhost",
+    "http://frontend:3000",
+    "http://localhost:3000",
+    "http://192.168.49.2:30100"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency
 def get_db():
