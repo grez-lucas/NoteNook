@@ -1,4 +1,4 @@
-minikube kubectl -- apply -f postgres/postgres-pvc.yaml
+minikube kubectl -- apply -f postgres/postgres-pv.yaml
 minikube kubectl -- apply -f postgres/postgres-config.yaml
 minikube kubectl -- apply -f postgres/postgres-secret.yaml
 minikube kubectl -- apply -f postgres/postgres.yaml
