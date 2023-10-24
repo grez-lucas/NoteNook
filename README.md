@@ -26,19 +26,22 @@ sudo docker compose -f deploy.yaml up
 
 To run the app on Kubernetes, you must have minikube installed on your machine. If you do not have minikube installed, please follow the instructions here: https://minikube.sigs.k8s.io/docs/start/
 
-Once you have minikube installed, you can run the app by running the following command in the root directory of the project:
 
+
+To start your minikube cluster, run the following command:
+(Make sure your docker daemon is running beforehand, if it isn't, run: `sudo dockerd` or `systemctl start docker`, if you still have errors with the daemon not showing up, check your docker context:
+https://docs.docker.com/desktop/faqs/linuxfaqs/)
 ```
 cd k8s
 chmod +x build.sh
 ```
+
+(You may have to wait a little for each deployment to pull images and be ready, to check the current status of each deployment, run `minikube kubectl -- get deployments` ) 
+
 Then find the IP address of the minikube cluster by running the following command:
 ```
 minikube ip
 ```
-Then, in the k8s directory, run the following command:
-```
-
 To get the port number of each service, run the following command:
 ```
 minikube kubectl -- get svc 
