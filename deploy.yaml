@@ -5,37 +5,43 @@ services:
     image: app-users:1.0
     ports:
       - 4002:4002
+    env_file:
+      - ./sign_up_api_basic/.env
     volumes:
-     - .:/users_app
+     - ./app:/users_app
     working_dir: /users_app/app
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 4002"
+    command: "uvicorn main:app --host 0.0.0.0 --port 4002"
     
   courses_api_app:
     image: app-courses:1.0
     ports:
       - 4005:4005
+    env_file:
+      - ./courses_api/.env
     build: .
     working_dir: /courses_app/app
     volumes:
-      - .:/courses_app/app
+      - ./app:/courses_app/app
     environment:
       DEBUG: 1
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 4005"
+    command: "uvicorn main:app --host 0.0.0.0 --port 4005"
     
   classnotes_api_app:    
     image: app-classnotes:1.0
     ports:
      - 4004:4004
+    env_file:
+      - ./classnotes_api/.env
     volumes:
-      - .:/classnotes_app
+      - ./app:/classnotes_app/app
     working_dir: /classnotes_app/app
     depends_on:
       - db
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 4004"
+    command: "uvicorn main:app --host 0.0.0.0 --port 4004"
 
   db:
     container_name: postgresql_db
