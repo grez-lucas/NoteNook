@@ -34,6 +34,7 @@ https://docs.docker.com/desktop/faqs/linuxfaqs/)
 ```
 cd k8s
 chmod +x build.sh
+./build.sh
 ```
 
 (You may have to wait a little for each deployment to pull images and be ready, to check the current status of each deployment, run `minikube kubectl -- get deployments` ) 
