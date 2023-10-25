@@ -69,14 +69,7 @@ export async function uploadNoteFile(id, file) {
 }
 
 
-export async function downloadNotefile(id, fileKey) {
-    return fetch(
-        `${configData.CLASSNOTES_URL}/classnotes/` + id + "/files/" + fileKey + "/",
-        {
-        method: "GET",
-        }
-    ).then((response) => {
-        return response.blob();
-    });
+export function downloadNotefile(fileKey) {
+  return `${configData.CLASSNOTES_URL}/classnotes/files/` + fileKey
 }
 
