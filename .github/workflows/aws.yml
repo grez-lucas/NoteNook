@@ -64,8 +64,8 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
+    - name: Build, tag, and push frontend image to Amazon ECR
+      id: build-frontend-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
@@ -75,6 +75,20 @@ jobs:
         # be deployed to ECS.
         cd frontend_react
         cd my-react-app
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+
+    - name: Build, tag, and push classnotes image to Amazon ECR
+      id: build-classnotes-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        cd classnotes_api
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
