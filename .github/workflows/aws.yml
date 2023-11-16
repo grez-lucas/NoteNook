@@ -32,7 +32,10 @@ on:
 
 env:
   AWS_REGION: us-west-2                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: frontend-repository           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY_FRONTEND: frontend-repository           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY_CLASSNOTES: classnotes-repository           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY_COURSES: courses-repository           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY_USERS: users-repository           # set this to your Amazon ECR repository name
   ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
   ECS_CLUSTER: Notenook-Cluster                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
@@ -68,7 +71,7 @@ jobs:
       id: build-frontend-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_FRONTEND }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -83,7 +86,7 @@ jobs:
       id: build-classnotes-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_CLASSNOTES }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -97,7 +100,7 @@ jobs:
       id: build-courses-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_COURSES }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -111,7 +114,7 @@ jobs:
       id: build-users-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_USERS }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
