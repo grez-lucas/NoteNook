@@ -147,18 +147,18 @@ jobs:
         container-name: ${{ env.CONTAINER_NAME_CLASSNOTES }}
         image: ${{ steps.build-classnotes-image.outputs.image }}
 
-    - name: Deploy Amazon ECS classnotes task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.classnotes-task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE_CLASSNOTES }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+    # - name: Deploy Amazon ECS classnotes task definition
+    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+    #   with:
+    #     task-definition: ${{ steps.classnotes-task-def.outputs.task-definition }}
+    #     service: ${{ env.ECS_SERVICE_CLASSNOTES }}
+    #     cluster: ${{ env.ECS_CLUSTER }}
+    #     wait-for-service-stability: true
 
-    - name: Deploy Amazon ECS frontend task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE_FRONTEND }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+    # - name: Deploy Amazon ECS frontend task definition
+    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+    #   with:
+    #     task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+    #     service: ${{ env.ECS_SERVICE_FRONTEND }}
+    #     cluster: ${{ env.ECS_CLUSTER }}
+    #     wait-for-service-stability: true
