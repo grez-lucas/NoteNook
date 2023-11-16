@@ -131,7 +131,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
         
-    - name: Amazon ECS frontend task definition
+    - name: Build Amazon ECS frontend task definition
       id: frontend-task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
@@ -139,7 +139,7 @@ jobs:
         container-name: ${{ env.CONTAINER_NAME_FRONTEND }}
         image: ${{ steps.build-frontend-image.outputs.image }}
 
-    - name: Amazon ECS classnotes task definition
+    - name: Build Amazon ECS classnotes task definition
       id: classnotes-task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
@@ -152,5 +152,13 @@ jobs:
       with:
         task-definition: ${{ steps.classnotes-task-def.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE_CLASSNOTES }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS frontend task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_FRONTEND }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
