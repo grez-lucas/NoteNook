@@ -40,14 +40,20 @@ env:
   
   ECS_SERVICE_FRONTEND: frontend-service                 # set this to your Amazon ECS service name
   ECS_SERVICE_CLASSNOTES: classnotes-service                 # set this to your Amazon ECS service name
+  ECS_SERVICE_USERS: users-service                 # set this to your Amazon ECS service name
+  ECS_SERVICE_COURSES: courses-service                 # set this to your Amazon ECS service name
 
   ECS_CLUSTER: Notenook-Cluster                 # set this to your Amazon ECS cluster name
   
   ECS_TASK_DEFINITION_FRONTEND: .aws/frontend-task-definition.json # set this to the path to your Amazon ECS task definition
   ECS_TASK_DEFINITION_CLASSNOTES: .aws/classnotes-task-definition.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION_USERS: .aws/users-task-definition.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION_COURSES: .aws/courses-task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME_FRONTEND: frontend-container           # set this to the name of the container in the
   CONTAINER_NAME_CLASSNOTES: classnotes-container           # set this to the name of the container in the
+  CONTAINER_NAME_USERS: users-container           # set this to the name of the container in the
+  CONTAINER_NAME_COURSES: courses-container           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 permissions:
@@ -147,18 +153,50 @@ jobs:
         container-name: ${{ env.CONTAINER_NAME_CLASSNOTES }}
         image: ${{ steps.build-classnotes-image.outputs.image }}
 
-    # - name: Deploy Amazon ECS classnotes task definition
-    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.classnotes-task-def.outputs.task-definition }}
-    #     service: ${{ env.ECS_SERVICE_CLASSNOTES }}
-    #     cluster: ${{ env.ECS_CLUSTER }}
-    #     wait-for-service-stability: true
+    - name: Build Amazon ECS users task definition
+      id: users-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION_USERS }}
+        container-name: ${{ env.CONTAINER_NAME_USERS }}
+        image: ${{ steps.build-users-image.outputs.image }}
 
-    # - name: Deploy Amazon ECS frontend task definition
-    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
-    #     service: ${{ env.ECS_SERVICE_FRONTEND }}
-    #     cluster: ${{ env.ECS_CLUSTER }}
-    #     wait-for-service-stability: true
+    - name: Build Amazon ECS courses task definition
+      id: courses-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION_COURSES }}
+        container-name: ${{ env.CONTAINER_NAME_COURSES }}
+        image: ${{ steps.build-courses-image.outputs.image }}
+
+    - name: Deploy Amazon ECS classnotes task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.classnotes-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_CLASSNOTES }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS frontend task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_FRONTEND }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS users task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.users-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_USERS }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS courses task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.courses-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_FRONTEND }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
