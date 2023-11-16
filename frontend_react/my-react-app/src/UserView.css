@@ -64,26 +64,35 @@
 .favorite-pdfs h3 {
   font-size: 20px;
   margin-bottom: 10px;
+  color: #333; /* Color del texto más oscuro */
+  border-bottom: 2px solid #425bbd; /* Línea de borde inferior */
+  padding-bottom: 5px; /* Espaciado inferior para la línea de borde */
 }
 
 .favorite-pdfs ul {
-  list-style: none; /* Quita las viñetas de la lista */
+  list-style: none;
   padding: 0;
+  margin: 0; /* Elimina el margen de la lista */
 }
 
 .favorite-pdfs li {
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .favorite-pdfs a {
-  color: #425bbd; /* Color de enlace azul */
+  color: #425bbd;
   text-decoration: none;
   font-size: 16px;
-  transition: color 0.3s; /* Transición suave del color del enlace */
+  margin-left: 10px;
+  flex: 1; /* Ocupa el espacio restante en el contenedor flex */
+  transition: color 0.3s;
 }
 
 .favorite-pdfs a:hover {
-  color: #454194; /* Color del enlace al pasar el mouse */
+  color: #454194;
 }
+
 
 /* Añadir más estilos personalizados según sea necesario */

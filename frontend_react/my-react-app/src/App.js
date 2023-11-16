@@ -8,6 +8,7 @@ import UserView from "./UserView"
 import MainView from "./MainView";
 import CoursesView from "./CoursesView";
 import NoteView from "./NoteView";
+import UploadView from "./UploadView";
 //import GroupView from "./Groups/GroupView"
 //import VisualizerView from "./visualizerView"
 //import AssignmentView from "./Assignments/assignmentView";
@@ -63,6 +64,7 @@ function App() {
         <>
             {/* puede ver los dashboard de resultado */}
             {/* <GroupView /> */}
+            <UploadView />
         </>
         )}
         {menuState === 4 && (
@@ -75,6 +77,7 @@ function App() {
         <>
             {/* puede crear grupos, pruebas y evaluaciones. */}
             {/* <EvaluationView /> */}
+            <UploadView />
         </>
         )}
         {menuState === 6 && (
