@@ -12,4 +12,4 @@ COPY ./app /app
 
 EXPOSE 4004
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "4004"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "4004", "--workers", "4"]
