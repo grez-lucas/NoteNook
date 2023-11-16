@@ -36,6 +36,10 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+async def root():
+    return {"message": "Courses API"}
+
 # ======== COURSES ========== # 
 
 @app.post("/courses/", response_model=schemas.Courses)
