@@ -32,15 +32,19 @@ on:
 
 env:
   AWS_REGION: us-west-2                   # set this to your preferred AWS region, e.g. us-west-1
+  
   ECR_REPOSITORY_FRONTEND: frontend-repository           # set this to your Amazon ECR repository name
   ECR_REPOSITORY_CLASSNOTES: classnotes-repository           # set this to your Amazon ECR repository name
   ECR_REPOSITORY_COURSES: courses-repository           # set this to your Amazon ECR repository name
   ECR_REPOSITORY_USERS: users-repository           # set this to your Amazon ECR repository name
-  ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
+  
+  ECS_SERVICE_FRONTEND: frontend-service                 # set this to your Amazon ECS service name
+  
   ECS_CLUSTER: Notenook-Cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
+  
+  ECS_TASK_DEFINITION_FRONTEND: .aws/frontend-task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
+  CONTAINER_NAME_FRONTEND: frontend-container           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 permissions:
@@ -123,20 +127,19 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: frontend-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION_FRONTEND }}
+        container-name: ${{ env.CONTAINER_NAME_FRONTEND }}
+        image: ${{ steps.build-frontend-image.outputs.image }}
 
-
-#    - name: Fill in the new image ID in the Amazon ECS task definition
-#      id: task-def
-#      uses: aws-actions/amazon-ecs-render-task-definition@v1
-#      with:
-#        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-#        container-name: ${{ env.CONTAINER_NAME }}
-#        image: ${{ steps.build-image.outputs.image }}
-#
-    #- name: Deploy Amazon ECS task definition
-     # uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #  with:
-   #     task-definition: ${{ steps.task-def.outputs.task-definition }}
-  #      service: ${{ env.ECS_SERVICE }}
- #       cluster: ${{ env.ECS_CLUSTER }}
- #       wait-for-service-stability: true
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE_FRONTEND }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
