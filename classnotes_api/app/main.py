@@ -47,6 +47,9 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.get("/")
+async def root():
+    return {"message": "Classnotes API"}
 
 @app.post("/classnotes/")
 async def create_classnotes(
