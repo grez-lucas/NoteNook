@@ -1,0 +1,91 @@
+[
+    {
+      "name": "courses-container",
+      "image": "778182124463.dkr.ecr.us-west-2.amazonaws.com/courses-repository:latest",
+      "cpu": 512,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "name": "courses-container-4005-tcp",
+          "containerPort": 4005,
+          "hostPort": 4005,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "FIRST_SUPERUSER_PASSWORD",
+          "value": "supersecretpassword"
+        },
+        {
+          "name": "POSTGRES_USER",
+          "value": "postgres"
+        },
+        {
+          "name": "PGADMIN_DEFAULT_EMAIL",
+          "value": "admin@admin.com"
+        },
+        {
+          "name": "USERS_OPEN_REGISTRATION",
+          "value": "True"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "anihortes"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "postgres"
+        },
+        {
+          "name": "PROJECT_NAME",
+          "value": "COURSES_API"
+        },
+        {
+          "name": "PGADMIN_DEFAULT_PASSWORD",
+          "value": "anihortes"
+        },
+        {
+          "name": "PGADMIN_DISABLE_POSTFIX",
+          "value": "1"
+        },
+        {
+          "name": "SERVER_NAME",
+          "value": "COURSES API"
+        },
+        {
+          "name": "FIRST_SUPERUSER",
+          "value": "admin@example.com"
+        },
+        {
+          "name": "POSTGRES_SERVER",
+          "value": "db"
+        },
+        {
+          "name": "SERVER_HOST",
+          "value": "http://localhost"
+        },
+        {
+          "name": "BACKEND_CORS_ORIGINS",
+          "value": "[\"http://localhost\", \"http://localhost:4000\"]"
+        }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/courses-task",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      }
+    }
+  ]
+  

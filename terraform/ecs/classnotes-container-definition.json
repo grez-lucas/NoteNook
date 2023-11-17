@@ -1,0 +1,91 @@
+[
+    {
+      "name": "classnotes-container",
+      "image": "778182124463.dkr.ecr.us-west-2.amazonaws.com/classnotes-repository:latest",
+      "cpu": 0,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "name": "classnotes-container-4004-tcp",
+          "containerPort": 4004,
+          "hostPort": 4004,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "FIRST_SUPERUSER_PASSWORD",
+          "value": "supersecretpassword"
+        },
+        {
+          "name": "POSTGRES_USER",
+          "value": "postgres"
+        },
+        {
+          "name": "PGADMIN_DEFAULT_EMAIL",
+          "value": "admin@admin.com"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "anihortes"
+        },
+        {
+          "name": "USERS_OPEN_REGISTRATION",
+          "value": "True"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "postgres"
+        },
+        {
+          "name": "PGADMIN_DEFAULT_PASSWORD",
+          "value": "anihortes"
+        },
+        {
+          "name": "PROJECT_NAME",
+          "value": "CLASSNOTES_API"
+        },
+        {
+          "name": "PGADMIN_DISABLE_POSTFIX",
+          "value": "1"
+        },
+        {
+          "name": "SERVER_NAME",
+          "value": "CLASSNOTES API"
+        },
+        {
+          "name": "FIRST_SUPERUSER",
+          "value": "admin@example.com"
+        },
+        {
+          "name": "POSTGRES_SERVER",
+          "value": "notenook-db.c8j5xifndnry.us-west-2.rds.amazonaws.com"
+        },
+        {
+          "name": "SERVER_HOST",
+          "value": "http://localhost"
+        },
+        {
+          "name": "BACKEND_CORS_ORIGINS",
+          "value": "[\"http://localhost\", \"http://localhost:4000\"]"
+        }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/classnotes-task",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      }
+    }
+  ]
+  
