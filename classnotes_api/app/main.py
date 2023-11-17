@@ -14,7 +14,7 @@ origins = [
     "http://localhost",
     "http://frontend:3000",
     "http://localhost:3000",
-    "http://192.168.49.2:30100"
+    "http://192.168.49.2:30100",
 ]
 
 app.add_middleware(
@@ -107,44 +107,71 @@ SUPPORTED_FILE_TYPES = {
 }
 
 
+# @app.post("/classnotes/{classnote_id}/files")
+# async def upload_file_to_classnote(
+#     classnote_id, file_upload: UploadFile, db: db_dependency
+# ):
+#     data = await file_upload.read()
+#     size = len(data)
+
+#     # Check file size
+#     max_size_mb = 1
+#     if not 0 < size <= max_size_mb * MB:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST, detail="Supported file size < 1MB"
+#         )
+
+#     # This helps security detecting true filetype
+#     file_type = magic.from_buffer(buffer=data, mime=True)
+#     if file_type not in SUPPORTED_FILE_TYPES:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail=f"Unsupported file type {file_type}, supported types are {SUPPORTED_FILE_TYPES}",
+#         )
+#     detected_file_ext = SUPPORTED_FILE_TYPES[file_type]
+
+#     # Creation of bucketfile in Postgresql
+#     db_file = models.BucketFile(
+#         file_name=file_upload.filename,
+#         file_ext=detected_file_ext,
+#         classnote_id=classnote_id,
+#     )
+#     db.add(db_file)
+#     db.commit()
+#     db.refresh(db_file)
+
+#     # Submitting file to S3 bucket
+#     s3_key = f"{db_file.id}.{db_file.file_ext}"
+#     s3_client.put_object(Key=s3_key, Body=data, Bucket=BUCKET_NAME)
+
+#     return {"key": s3_key}
+
+
 @app.post("/classnotes/{classnote_id}/files")
 async def upload_file_to_classnote(
     classnote_id, file_upload: UploadFile, db: db_dependency
 ):
-    data = await file_upload.read()
-    size = len(data)
-
-    # Check file size
-    max_size_mb = 1
-    if not 0 < size <= max_size_mb * MB:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Supported file size < 1MB"
-        )
-
-    # This helps security detecting true filetype
-    file_type = magic.from_buffer(buffer=data, mime=True)
-    if file_type not in SUPPORTED_FILE_TYPES:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported file type {file_type}, supported types are {SUPPORTED_FILE_TYPES}",
-        )
-    detected_file_ext = SUPPORTED_FILE_TYPES[file_type]
-
+    # Detect file extension
+    f_ext = file_upload.content_type.split("/")[1]
     # Creation of bucketfile in Postgresql
     db_file = models.BucketFile(
         file_name=file_upload.filename,
-        file_ext=detected_file_ext,
+        file_ext=f_ext,
         classnote_id=classnote_id,
     )
     db.add(db_file)
     db.commit()
     db.refresh(db_file)
 
-    # Submitting file to S3 bucket
-    s3_key = f"{db_file.id}.{db_file.file_ext}"
-    s3_client.put_object(Key=s3_key, Body=data, Bucket=BUCKET_NAME)
-
-    return {"key": s3_key}
+    try:
+        s3_url = s3_client.generate_presigned_post(
+            Bucket=BUCKET_NAME,
+            Key=db_file.file_name + "." + db_file.file_ext,
+            ExpiresIn=60,
+        )
+        return s3_url
+    except:
+        raise HTTPException(status_code=400, detail="Error generating presigned url")
 
 
 @app.get("/classnotes/files/{file_key}")
