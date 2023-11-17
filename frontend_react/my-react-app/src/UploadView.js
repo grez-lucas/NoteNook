@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './UploadView.css'; 
+import './UploadView.css';
 
 const UploadView = () => {
   // Estados para gestionar el nombre, descripción y archivo seleccionado
@@ -24,22 +24,52 @@ const UploadView = () => {
   };
 
   // Manejador para enviar el formulario
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Aquí puedes realizar la lógica para subir el archivo y guardar la información
-    // Puedes utilizar bibliotecas como axios o fetch para enviar el archivo al servidor
+    let classnote_id = 1;
+    // Realizar la solicitud PUT para obtener la URL de carga del archivo
 
-    // Ejemplo de cómo mostrar la información en la consola
-    console.log('Nombre:', nombre);
-    console.log('Descripción:', descripcion);
-    console.log('Archivo:', archivo);
+    const formDataAPI = new FormData();
+    formDataAPI.append("file_upload", archivo);
+    const apiResponse = await fetch(`http://localhost:4004/classnotes/${classnote_id}/files`, {
+      method: 'POST',
+      body: formDataAPI
+    });
+
+    if (!apiResponse.ok) {
+      console.error('Error al obtener la URL de carga del archivo');
+      return;
+    }
+
+    const apiResult = await apiResponse.json();
+    const { url, fields } = apiResult;
+
+    // Crear un objeto FormData para enviar el archivo
+    const formData = new FormData();
+    Object.entries(fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    formData.append('file', archivo);
+
+    // Realizar la solicitud POST con el archivo adjunto
+    const s3Response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!s3Response.ok) {
+      console.error('Error al subir el archivo');
+      return;
+    }
+
+    console.log('Archivo subido exitosamente');
   };
 
   return (
     <div>
       <h1>Subir Archivo</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <label>
           Nombre:
           <input type="text" value={nombre} onChange={handleNombreChange} />

@@ -163,10 +163,11 @@ async def upload_file_to_classnote(
     db.commit()
     db.refresh(db_file)
 
+    key = str(db_file.id) + "." + db_file.file_ext
     try:
         s3_url = s3_client.generate_presigned_post(
             Bucket=BUCKET_NAME,
-            Key=db_file.file_name + "." + db_file.file_ext,
+            Key=key,
             ExpiresIn=60,
         )
         return s3_url
